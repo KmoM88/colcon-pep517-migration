@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pkg_pep517_setuptools"
+version = "1.0.0"
+description = "Mock PEP 517 package using setuptools backend"
+dependencies = [
+    "argcomplete",
+]
+authors = [
+    { name = "Colcon Dev", email = "dev@colcon.org" }
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[project.scripts]
+hello-pep517-setuptools = "pkg_pep517_setuptools.main:main"

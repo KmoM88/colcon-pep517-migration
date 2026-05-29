@@ -110,3 +110,72 @@ jobs:
           
           # 10. Verify execution from shell directly without python interpreter
           hello-py
+
+  verify-pep517-discovery:
+    name: Verify PEP 517 Packages Discovery
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Bootstrap Colcon and Verify PEP 517 Discovery
+        run: |
+          # 1. Create and activate virtual environment
+          python3 -m venv venv
+          source venv/bin/activate
+          
+          # 2. Install vcstool
+          pip install vcstool
+          
+          # 3. Retrieve repositories configuration and requirements
+          curl --output colcon.repos https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/colcon.repos
+          curl --output requirements.txt https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/requirements.txt
+          
+          # 4. Install third-party requirements
+          pip install -r requirements.txt
+          
+          # 5. Import colcon source repositories
+          mkdir src
+          vcs import src < colcon.repos
+          
+          # 5b. Swap in custom development branch of colcon-core
+          rm -rf src/colcon-core
+          git clone -b devel-pep517 https://github.com/KmoM88/colcon-core.git src/colcon-core
+          
+          # 6. Execute the first build of colcon from source tree
+          ./src/colcon-core/bin/colcon build --paths src/*
+          
+          # 7. Source the newly built colcon workspace setup
+          source install/local_setup.sh
+          
+          # 8. Verify the mock PEP 517 packages are successfully discovered
+          echo "=== VERIFYING PACKAGE DISCOVERY ==="
+          colcon list | grep pkg_pep517_setuptools | grep python
+          colcon list | grep pkg_pep517_hatchling | grep python
+          colcon list | grep pkg_pep517_flit | grep python
+          
+          # 9. Verify augmented package details and dependencies
+          echo "=== VERIFYING METADATA AUGMENTATION (setuptools) ==="
+          colcon info --packages-select pkg_pep517_setuptools
+          colcon info --packages-select pkg_pep517_setuptools | grep "type: python"
+          colcon info --packages-select pkg_pep517_setuptools | grep "build: setuptools wheel"
+          
+          echo "=== VERIFYING METADATA AUGMENTATION (hatchling) ==="
+          colcon info --packages-select pkg_pep517_hatchling
+          colcon info --packages-select pkg_pep517_hatchling | grep "type: python"
+          colcon info --packages-select pkg_pep517_hatchling | grep "build: hatchling"
+          colcon info --packages-select pkg_pep517_hatchling | grep "run: PyYAML"
+          colcon info --packages-select pkg_pep517_hatchling | grep "test: pytest"
+          
+          echo "=== VERIFYING METADATA AUGMENTATION (flit) ==="
+          colcon info --packages-select pkg_pep517_flit
+          colcon info --packages-select pkg_pep517_flit | grep "type: python"
+          colcon info --packages-select pkg_pep517_flit | grep "build: flit_core"
+          colcon info --packages-select pkg_pep517_flit | grep "run: distlib"
+

@@ -1,0 +1,22 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "pkg_pep517_flit"
+version = "1.0.0"
+description = "Mock PEP 517 package using flit backend"
+dependencies = [
+    "distlib",
+]
+authors = [
+    { name = "Colcon Dev", email = "dev@colcon.org" }
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+]
+
+[project.scripts]
+hello-pep517-flit = "pkg_pep517_flit:main"
