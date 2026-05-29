@@ -1,0 +1,104 @@
+name: Colcon Source Bootstrap Test
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  build-setup-cfg:
+    name: Build Setup.cfg Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Bootstrap Colcon and Build setup.cfg Package
+        run: |
+          # 1. Create and activate virtual environment
+          python3 -m venv venv
+          source venv/bin/activate
+          
+          # 2. Install vcstool
+          pip install vcstool
+          
+          # 3. Retrieve repositories configuration and requirements
+          curl --output colcon.repos https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/colcon.repos
+          curl --output requirements.txt https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/requirements.txt
+          
+          # 4. Install third-party requirements
+          pip install -r requirements.txt
+          
+          # 5. Import colcon source repositories
+          mkdir src
+          vcs import src < colcon.repos
+          
+          # 6. Execute the first build of colcon from source tree
+          ./src/colcon-core/bin/colcon build --paths src/*
+          
+          # 7. Source the newly built colcon workspace setup
+          source install/local_setup.sh
+          
+          # 8. Build the test package containing setup.cfg (native static configuration)
+          colcon build --paths test_packages/pkg_setup_cfg
+          
+          # 9. Source the updated workspace
+          source install/local_setup.sh
+          
+          # 10. Verify execution from shell directly without python interpreter
+          hello-cfg
+
+  build-setup-py:
+    name: Build Setup.py Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Bootstrap Colcon and Build setup.py Package
+        run: |
+          # 1. Create and activate virtual environment
+          python3 -m venv venv
+          source venv/bin/activate
+          
+          # 2. Install vcstool
+          pip install vcstool
+          
+          # 3. Retrieve repositories configuration and requirements
+          curl --output colcon.repos https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/colcon.repos
+          curl --output requirements.txt https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/requirements.txt
+          
+          # 4. Install third-party requirements
+          pip install -r requirements.txt
+          
+          # 5. Import colcon source repositories
+          mkdir src
+          vcs import src < colcon.repos
+          
+          # 6. Execute the first build of colcon from source tree
+          ./src/colcon-core/bin/colcon build --paths src/*
+          
+          # 7. Source the newly built colcon workspace setup
+          source install/local_setup.sh
+          
+          # 8. Build the test package containing setup.py only (dynamic extension)
+          colcon build --paths test_packages/pkg_setup_py
+          
+          # 9. Source the updated workspace
+          source install/local_setup.sh
+          
+          # 10. Verify execution from shell directly without python interpreter
+          hello-py
