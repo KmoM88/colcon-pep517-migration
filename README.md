@@ -48,6 +48,9 @@ The repository hosts deep-dive technical documentation analyzing how the legacy 
 
 This section summarizes our technical review and validation of pending upstream pull requests and drafts aimed at introducing PEP 517 support to `colcon-core`:
 
+*   **[PEP 517 Identification & Feature Gating (PR #1)](07-pr1-implementation-and-verification.md)**: Details foundational identification, dependency parsing, feature gating, unit testing, and GitHub Actions discovery validation for PR #1.
+*   **[PEP 517 Build Task Design & Blueprint (PR #2)](08-pep517-build-task-design.md)**: Outlines the technical subprocess design, AsyncHookCaller execution, and target-pip wheel installation blueprint.
+*   **[PEP 517 Build Task Implementation & Verification (PR #2)](09-pep517-build-task-implementation.md)**: Documents Phase 2 accomplishments, namespace package alignments (`__init__.py`), multi-backend testing (`setuptools`, `hatchling`, `flit`), and bootstrapped integration builds.
 *   **Backend Interface Review**: Evaluation of PEP 517 build backend integration inside `colcon-core`. This includes analyzing how build frontends (like `build` or `pip`) are invoked to build colcon-managed packages.
 *   **Compatibility & Parity**: Assessing whether the proposed backend changes retain complete feature parity with legacy execution (e.g., handling of editable installs, developmental dependencies, and metadata parsing).
 *   **Interoperability**: Investigating the impact on existing colcon extensions and downstream packages that depend on legacy build discovery structures.
@@ -80,7 +83,7 @@ graph TD
 | **M1: Isolated Workspace** | Provide stable `.repos` and setup scripts | Stable bootstrap environment | Done |
 | **M2: Architecture Audit** | Complete deep-dive architectural docs | Core and Extension analysis reports | Done |
 | **M3: Upstream PR Validation** | Evaluate PEP 517 PRs for backward compatibility | Foundational PEP 517 Identification (PR #1) | Done |
-| **M4: PEP 517 Build Pipeline** | Implement standard build task in colcon-core | Subprocess build execution & wheel installs (PR #2) | In Progress |
+| **M4: PEP 517 Build Pipeline** | Implement standard build task in colcon-core | Subprocess build execution & wheel installs (PR #2) | Done |
 | **M5: Upstream Issue Proposal** | Draft and submit official upstream migration issue | PEP 517 Roadmap Issue on `colcon/colcon-core` | Planned |
 
 ### Upstream Proposal
