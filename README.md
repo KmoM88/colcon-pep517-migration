@@ -78,9 +78,10 @@ graph TD
 | Milestone | Objective | Deliverables | Status |
 | :--- | :--- | :--- | :--- |
 | **M1: Isolated Workspace** | Provide stable `.repos` and setup scripts | Stable bootstrap environment | Done |
-| **M2: Architecture Audit** | Complete deep-dive architectural docs | Core and Extension analysis reports | In Progress |
-| **M3: Upstream PR Validation** | Evaluate PEP 517 PRs for backward compatibility | Detailed review feedback & issue comments | In Progress |
-| **M4: Issue Proposal** | Draft and submit official upstream migration issue | PEP 517 Roadmap Issue on `colcon/colcon-core` | Planned |
+| **M2: Architecture Audit** | Complete deep-dive architectural docs | Core and Extension analysis reports | Done |
+| **M3: Upstream PR Validation** | Evaluate PEP 517 PRs for backward compatibility | Foundational PEP 517 Identification (PR #1) | Done |
+| **M4: PEP 517 Build Pipeline** | Implement standard build task in colcon-core | Subprocess build execution & wheel installs (PR #2) | In Progress |
+| **M5: Upstream Issue Proposal** | Draft and submit official upstream migration issue | PEP 517 Roadmap Issue on `colcon/colcon-core` | Planned |
 
 ### Upstream Proposal
 
