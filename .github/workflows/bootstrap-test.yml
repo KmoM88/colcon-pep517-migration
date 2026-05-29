@@ -137,8 +137,9 @@ jobs:
           curl --output colcon.repos https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/colcon.repos
           curl --output requirements.txt https://raw.githubusercontent.com/colcon/colcon.readthedocs.org/main/requirements.txt
           
-          # 4. Install third-party requirements
+          # 4. Install third-party requirements and PEP 517 backends
           pip install -r requirements.txt
+          pip install flit_core hatchling
           
           # 5. Import colcon source repositories
           mkdir src
@@ -178,4 +179,14 @@ jobs:
           colcon info --packages-select pkg_pep517_flit | grep "type: python"
           colcon info --packages-select pkg_pep517_flit | grep "build: flit_core"
           colcon info --packages-select pkg_pep517_flit | grep "run: distlib"
-
+          
+          # 10. Compile PEP 517 mock packages using modern pipeline
+          echo "=== BUILDING PEP 517 PACKAGES ==="
+          colcon build --paths test_packages/pkg_pep517_setuptools test_packages/pkg_pep517_hatchling test_packages/pkg_pep517_flit
+          
+          # 11. Source newly built workspace and run each entrypoint script to verify execution
+          echo "=== RUNNING EXECUTABLES ==="
+          source install/local_setup.sh
+          hello-pep517-setuptools
+          hello-pep517-hatchling
+          hello-pep517-flit
