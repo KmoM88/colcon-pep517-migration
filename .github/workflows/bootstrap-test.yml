@@ -40,6 +40,10 @@ jobs:
           mkdir src
           vcs import src < colcon.repos
           
+          # 5b. Swap in custom development branch of colcon-core
+          rm -rf src/colcon-core
+          git clone -b devel-pep517 https://github.com/KmoM88/colcon-core.git src/colcon-core
+          
           # 6. Execute the first build of colcon from source tree
           ./src/colcon-core/bin/colcon build --paths src/*
           
@@ -87,6 +91,10 @@ jobs:
           # 5. Import colcon source repositories
           mkdir src
           vcs import src < colcon.repos
+          
+          # 5b. Swap in custom development branch of colcon-core
+          rm -rf src/colcon-core
+          git clone -b devel-pep517 https://github.com/KmoM88/colcon-core.git src/colcon-core
           
           # 6. Execute the first build of colcon from source tree
           ./src/colcon-core/bin/colcon build --paths src/*
